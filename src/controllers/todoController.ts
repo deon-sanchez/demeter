@@ -37,7 +37,7 @@ export const createTodo = async (req: Request, res: Response) => {
     const todo = new TodoModel(todoData);
     const savedTodo = await todo.save();
 
-    res.status(201).send(savedTodo); // Respond with the created todo item.
+    res.status(201).send(savedTodo);
   } catch (error: unknown) {
     console.error(error);
 
