@@ -1,15 +1,13 @@
-import mongoose from "mongoose";
 import ExpressConfig from "./config/express.config";
 import todoRouter from "./routes/todoRouter";
-import { MONGO_URI, PORT } from "./config/env";
+import { PORT } from "./config/env";
+import connectDB from "./config/mongo.config";
 
-mongoose.connect(MONGO_URI).then(() => {
-  console.log(`connected to database ${MONGO_URI}`);
-});
+connectDB();
 const app = ExpressConfig();
 
-app.use("/", todoRouter);
+app.use("/api", todoRouter);
 
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Server running on http://localhost:${PORT}/api`);
 });
