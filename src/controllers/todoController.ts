@@ -30,15 +30,16 @@ export const listTodos = async (_req: Request, res: Response) => {
 
 export const createTodo = async (req: Request, res: Response) => {
   try {
-    const todo = req.body.content as iTodo;
+    const todo = req.body as iTodo;
 
-    const result = new TodoModel({ todo });
+    const result = new TodoModel({ ...todo });
 
     if (result) {
       await result.save();
       res.status(201).send(result);
     }
   } catch (error) {
+    console.error(error);
     res.status(500).send(error);
   }
 };
@@ -56,12 +57,12 @@ export const deleteTodo = async (_req: Request, res: Response) => {
   }
 };
 
-export const updateTodo = async (_req: Request, res: Response) => {
+export const updateTodo = async (req: Request, res: Response) => {
   try {
-    const _id = _req?.params?.id;
-    const todo = _req.body as iTodo;
+    const _id = req?.params?.id;
+    const todo = req.body as iTodo;
 
-    const result = await TodoModel.findByIdAndUpdate(_id, todo);
+    const result = await TodoModel.findByIdAndUpdate(_id, todo, { new: true });
 
     if (result) {
       res.status(200).send(result);

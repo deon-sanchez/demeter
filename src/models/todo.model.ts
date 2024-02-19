@@ -2,10 +2,6 @@ import mongoose, { Schema } from "mongoose";
 import iTodo from "../interfaces/iTodo";
 
 const todoSchema = new Schema<iTodo>({
-  _id: {
-    type: Schema.Types.UUID,
-    required: true,
-  },
   title: {
     type: String,
     required: true,
