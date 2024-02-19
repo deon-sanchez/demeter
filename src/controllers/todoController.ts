@@ -8,9 +8,11 @@ export const getTodo = async (req: Request, res: Response) => {
   try {
     const todo = (await TodoModel.findById(id)) as iTodo;
 
-    if (todo) {
-      res.status(200).send(todo);
+    if (!todo) {
+      return res.status(404).send({ message: "Todo not found" });
     }
+
+    res.status(200).send(todo);
   } catch (error) {
     res.status(500).send(error);
   }
@@ -30,17 +32,24 @@ export const listTodos = async (_req: Request, res: Response) => {
 
 export const createTodo = async (req: Request, res: Response) => {
   try {
-    const todo = req.body as iTodo;
+    const todoData = req.body as iTodo;
 
-    const result = new TodoModel({ ...todo });
+    const todo = new TodoModel(todoData);
+    const savedTodo = await todo.save();
 
-    if (result) {
-      await result.save();
-      res.status(201).send(result);
-    }
-  } catch (error) {
+    res.status(201).send(savedTodo); // Respond with the created todo item.
+  } catch (error: unknown) {
     console.error(error);
-    res.status(500).send(error);
+
+    if (error instanceof Error) {
+      if ("name" in error && error.name === "ValidationError") {
+        return res.status(400).send({ message: error.message });
+      }
+
+      res.status(500).send({ message: error.message });
+    } else {
+      res.status(500).send({ message: "An unknown error occurred" });
+    }
   }
 };
 
